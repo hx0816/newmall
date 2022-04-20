@@ -26,7 +26,7 @@ export default {
   methods:{
       itemClick(){
           if(this.actived) return
-          this.$router.push(this.path)
+          this.$router.replace(this.path)
       }
   }
 };

@@ -51,7 +51,6 @@ export default {
 <style lang='scss' scoped>
 @import './icon/iconfont.css';
 .main-tab-bar{
-    font-size: 14px;
     position: fixed;
     left: 0;
     right: 0;
