@@ -5,13 +5,19 @@
         <span>购物街</span>
       </template>
     </nav-bar>
-    <my-scroll class="content">
+    <my-scroll 
+    ref="scroll"
+    class="content"
+    :probeType="3"
+    @scroll="contentScroll"
+    >
       <swiper :imgList="swiperList" :isShowPage="true" :isShowControl="true" :pageNumber="true"></swiper>
       <recommend :list="recommendList" />
       <fature-view />
       <tab-control :title="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
       <goods-list :goodsList="goodsList[showType].list"></goods-list>
     </my-scroll>
+    <back-top v-show="isShowBackTop" @click.native="backTop"></back-top>
   </div>
 </template>
 
@@ -20,15 +26,17 @@ import NavBar from "@/components/common/navbar/NavBar";
 import MyScroll from "@/components/common/scroll/MyScroll";
 import Swiper from "@/components/common/swiper/Swiper";
 import TabControl from "@/components/content/tabControl/TabControl";
-import GoodsList from '@/components/content/goodsList/GoodsList'
+import GoodsList from "@/components/content/goodsList/GoodsList";
 
 import Recommend from "./childComps/Recommend";
 import FatureView from "./childComps/FatureView";
 
 import { getHomeMutilData, getGoodsList } from "@/api/home";
+import {backTopMixin} from '@/common/mixin'
 
 export default {
   name: "Home",
+  mixins:[backTopMixin],
   components: {
     NavBar,
     MyScroll,
@@ -36,7 +44,7 @@ export default {
     Recommend,
     FatureView,
     TabControl,
-    GoodsList
+    GoodsList,
   },
   data() {
     return {
@@ -48,7 +56,8 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] }
       },
-      showType:'pop'
+      showType: "pop",
+      isShowBackTop:false
     };
   },
   methods: {
@@ -61,24 +70,29 @@ export default {
     async getGoodsList(type) {
       const data = (await getGoodsList(type, this.goodsList[type].page + 1))
         .data;
-      this.goodsList[type].page ++
-      this.goodsList[type].list = data.list
+      this.goodsList[type].page++;
+      this.goodsList[type].list = data.list;
     },
 
     // 事件监听
     // 监听tabControl点击事件
-    tabClick(index){
-      switch(index){
+    tabClick(index) {
+      switch (index) {
         case 0:
-          this.showType = 'pop'
-          break
+          this.showType = "pop";
+          break;
         case 1:
-          this.showType = 'new'
-          break
+          this.showType = "new";
+          break;
         case 2:
-          this.showType = 'sell'
+          this.showType = "sell";
       }
-    }
+    },
+    // 监听内容滚动
+    contentScroll(y){
+      // 监听backTop显示隐藏
+      this.listenShowBackTop(y)
+    },
   },
   created() {
     // 获取多条数据

@@ -34,6 +34,11 @@ export default {
       scroll: ""
     };
   },
+  methods:{
+    scrollTo(x,y,time=500){
+      this.scroll.scrollTo(x,y,time)
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this.scroll = new BScroll(this.$refs.wrapper, {
@@ -41,7 +46,10 @@ export default {
           click:this.click,
           observeDOM:this.observeDOM,
           observeImage:this.observeImage
-      });
+      })
+      this.scroll.on('scroll',position=>{
+        this.$emit('scroll',position.y)
+      })
     });
   }
 };
