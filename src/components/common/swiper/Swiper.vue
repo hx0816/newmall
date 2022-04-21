@@ -155,6 +155,9 @@ export default {
   },
   updated() {
     this.$refs.content.appendChild(this.firstImg.cloneNode(true));
+  },
+  beforeDestroy(){
+    clearInterval(this.timer)
   }
 };
 </script>

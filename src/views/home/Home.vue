@@ -5,12 +5,11 @@
         <span>购物街</span>
       </template>
     </nav-bar>
-    <my-scroll 
-    class="content"
-    >
+    <my-scroll class="content">
       <swiper :imgList="swiperList" :isShowPage="true" :isShowControl="true" :pageNumber="true"></swiper>
-      <recommend :list="recommendList"></recommend>
-      <fature-view></fature-view>
+      <recommend :list="recommendList" />
+      <fature-view />
+      <tab-control :title="['流行','新款','精选']" class="tab-control"></tab-control>
     </my-scroll>
   </div>
 </template>
@@ -19,6 +18,7 @@
 import NavBar from "@/components/common/navbar/NavBar";
 import MyScroll from "@/components/common/scroll/MyScroll";
 import Swiper from "@/components/common/swiper/Swiper";
+import TabControl from "@/components/common/tabControl/TabControl";
 
 import Recommend from "./childComps/Recommend";
 import FatureView from "./childComps/FatureView";
@@ -32,7 +32,8 @@ export default {
     MyScroll,
     Swiper,
     Recommend,
-    FatureView
+    FatureView,
+    TabControl
   },
   data() {
     return {
@@ -63,12 +64,15 @@ export default {
     top: 0;
     right: 0;
   }
-  .content{
+  .content {
     position: absolute;
     top: 44px;
     left: 0;
     right: 0;
     bottom: 0;
+  }
+  .tab-control{
+    margin-top: 10px;
   }
 }
 </style>
