@@ -9,7 +9,8 @@
       <swiper :imgList="swiperList" :isShowPage="true" :isShowControl="true" :pageNumber="true"></swiper>
       <recommend :list="recommendList" />
       <fature-view />
-      <tab-control :title="['流行','新款','精选']" class="tab-control"></tab-control>
+      <tab-control :title="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <goods-list :goodsList="goodsList[showType].list"></goods-list>
     </my-scroll>
   </div>
 </template>
@@ -18,12 +19,13 @@
 import NavBar from "@/components/common/navbar/NavBar";
 import MyScroll from "@/components/common/scroll/MyScroll";
 import Swiper from "@/components/common/swiper/Swiper";
-import TabControl from "@/components/common/tabControl/TabControl";
+import TabControl from "@/components/content/tabControl/TabControl";
+import GoodsList from '@/components/content/goodsList/GoodsList'
 
 import Recommend from "./childComps/Recommend";
 import FatureView from "./childComps/FatureView";
 
-import { getHomeMutilData } from "@/api/home";
+import { getHomeMutilData, getGoodsList } from "@/api/home";
 
 export default {
   name: "Home",
@@ -33,21 +35,58 @@ export default {
     Swiper,
     Recommend,
     FatureView,
-    TabControl
+    TabControl,
+    GoodsList
   },
   data() {
     return {
       // 轮播图图片
       swiperList: [],
-      recommendList: []
+      recommendList: [],
+      goodsList: {
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] }
+      },
+      showType:'pop'
     };
   },
-  async created() {
+  methods: {
+    // 请求数据
+    async getHomeMutilData() {
+      const data = (await getHomeMutilData()).data;
+      this.swiperList = data.banner.list;
+      this.recommendList = data.recommend.list;
+    },
+    async getGoodsList(type) {
+      const data = (await getGoodsList(type, this.goodsList[type].page + 1))
+        .data;
+      this.goodsList[type].page ++
+      this.goodsList[type].list = data.list
+    },
+
+    // 事件监听
+    // 监听tabControl点击事件
+    tabClick(index){
+      switch(index){
+        case 0:
+          this.showType = 'pop'
+          break
+        case 1:
+          this.showType = 'new'
+          break
+        case 2:
+          this.showType = 'sell'
+      }
+    }
+  },
+  created() {
     // 获取多条数据
-    const data = (await getHomeMutilData()).data;
-    console.log(data);
-    this.swiperList = data.banner.list;
-    this.recommendList = data.recommend.list;
+    this.getHomeMutilData();
+    // 获取商品数据
+    this.getGoodsList("pop");
+    this.getGoodsList("new");
+    this.getGoodsList("sell");
   }
 };
 </script>
@@ -71,8 +110,9 @@ export default {
     right: 0;
     bottom: 0;
   }
-  .tab-control{
+  .tab-control {
     margin-top: 10px;
+    margin-bottom: 5px;
   }
 }
 </style>

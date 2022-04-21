@@ -23,6 +23,7 @@ export default {
     methods:{
         tabClick(index){
             this.showIndex = index
+            this.$emit('tabClick',index)
         }
     }
 }
