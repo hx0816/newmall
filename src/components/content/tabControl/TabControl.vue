@@ -33,6 +33,9 @@ export default {
 .tab-control{
     display: flex;
     justify-content: space-around;
+    background-color: #fff;
+    height: 44px;
+    line-height: 44px;
     span{
         padding: 5px;
     }

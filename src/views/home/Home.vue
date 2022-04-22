@@ -5,18 +5,24 @@
         <span>购物街</span>
       </template>
     </nav-bar>
-    <my-scroll 
-    ref="scroll"
-    class="content"
-    :probeType="3"
-    :pullUpLoad="true"
-    @scroll="contentScroll"
-    @sole="sole"
+    <tab-control 
+    ref="tabC2"
+    v-show="isShowTabC"
+    :title="['流行','新款','精选']" class="tab-control2" @tabClick="tabClick"></tab-control>
+    <my-scroll
+      ref="scroll"
+      class="content"
+      :probeType="3"
+      :pullUpLoad="true"
+      @scroll="contentScroll"
+      @sole="sole"
     >
       <swiper :imgList="swiperList" :isShowPage="true" :isShowControl="true" :pageNumber="true"></swiper>
       <recommend :list="recommendList" />
       <fature-view />
-      <tab-control :title="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <tab-control 
+      ref="tabC1"
+      :title="['流行','新款','精选']" class="tab-control1" @tabClick="tabClick"></tab-control>
       <goods-list :goodsList="goodsList[showType].list"></goods-list>
     </my-scroll>
     <back-top v-show="isShowBackTop" @click.native="backTop"></back-top>
@@ -34,11 +40,11 @@ import Recommend from "./childComps/Recommend";
 import FatureView from "./childComps/FatureView";
 
 import { getHomeMutilData, getGoodsList } from "@/api/home";
-import {backTopMixin} from '@/common/mixin'
+import { backTopMixin } from "@/common/mixin";
 
 export default {
   name: "Home",
-  mixins:[backTopMixin],
+  mixins: [backTopMixin],
   components: {
     NavBar,
     MyScroll,
@@ -59,7 +65,8 @@ export default {
         sell: { page: 0, list: [] }
       },
       showType: "pop",
-      isShowBackTop:false
+      isShowBackTop: false,
+      isShowTabC:false
     };
   },
   methods: {
@@ -73,8 +80,8 @@ export default {
       const data = (await getGoodsList(type, this.goodsList[type].page + 1))
         .data;
       this.goodsList[type].page++;
-      this.goodsList[type].list.push(...data.list)
-      this.$refs.scroll.finishPullUp()
+      this.goodsList[type].list.push(...data.list);
+      this.$refs.scroll.finishPullUp();
     },
 
     // 事件监听
@@ -90,15 +97,18 @@ export default {
         case 2:
           this.showType = "sell";
       }
+      this.$refs.tabC1.showIndex = index
+      this.$refs.tabC2.showIndex = index
     },
     // 监听内容滚动
-    contentScroll(y){
+    contentScroll(y) {
       // 监听backTop显示隐藏
-      this.listenShowBackTop(y)
+      this.listenShowBackTop(y);
+      this.isShowTabC = Math.abs(y) >= this.$refs.tabC1.$el.offsetTop
     },
     // 触底
-    sole(){
-      this.getGoodsList(this.showType)
+    sole() {
+      this.getGoodsList(this.showType);
     }
   },
   created() {
@@ -131,9 +141,15 @@ export default {
     right: 0;
     bottom: 0;
   }
-  .tab-control {
-    margin-top: 10px;
+  .tab-control1 {
     margin-bottom: 5px;
+  }
+  .tab-control2{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 44px;
+    z-index: 9;
   }
 }
 </style>
