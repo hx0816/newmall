@@ -9,7 +9,9 @@
     ref="scroll"
     class="content"
     :probeType="3"
+    :pullUpLoad="true"
     @scroll="contentScroll"
+    @sole="sole"
     >
       <swiper :imgList="swiperList" :isShowPage="true" :isShowControl="true" :pageNumber="true"></swiper>
       <recommend :list="recommendList" />
@@ -71,7 +73,8 @@ export default {
       const data = (await getGoodsList(type, this.goodsList[type].page + 1))
         .data;
       this.goodsList[type].page++;
-      this.goodsList[type].list = data.list;
+      this.goodsList[type].list.push(...data.list)
+      this.$refs.scroll.finishPullUp()
     },
 
     // 事件监听
@@ -93,6 +96,10 @@ export default {
       // 监听backTop显示隐藏
       this.listenShowBackTop(y)
     },
+    // 触底
+    sole(){
+      this.getGoodsList(this.showType)
+    }
   },
   created() {
     // 获取多条数据

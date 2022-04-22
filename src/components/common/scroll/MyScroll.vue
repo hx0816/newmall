@@ -27,6 +27,10 @@ export default {
     click:{
         type:Boolean,
         default:true
+    },
+    pullUpLoad:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -36,7 +40,10 @@ export default {
   },
   methods:{
     scrollTo(x,y,time=500){
-      this.scroll.scrollTo(x,y,time)
+     this.scroll && this.scroll.scrollTo(x,y,time)
+    },
+    finishPullUp(){
+      this.scroll && this.scroll.finishPullUp()
     }
   },
   mounted() {
@@ -45,10 +52,14 @@ export default {
           probeType:this.probeType,
           click:this.click,
           observeDOM:this.observeDOM,
-          observeImage:this.observeImage
+          observeImage:this.observeImage,
+          pullUpLoad:this.pullUpLoad
       })
       this.scroll.on('scroll',position=>{
         this.$emit('scroll',position.y)
+      })
+      this.pullUpLoad && this.scroll.on('pullingUp',()=>{
+        this.$emit('sole')
       })
     });
   }
