@@ -29,7 +29,7 @@ export default {
     text-align: center;
   }
   &-left {
-    width: 80px;
+    width: 70px;
   }
   &-center{
       flex: 1;
