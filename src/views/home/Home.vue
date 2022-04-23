@@ -66,7 +66,8 @@ export default {
       },
       showType: "pop",
       isShowBackTop: false,
-      isShowTabC:false
+      isShowTabC:false,
+      scrollY:0
     };
   },
   methods: {
@@ -108,7 +109,7 @@ export default {
     },
     // 触底
     sole() {
-      this.getGoodsList(this.showType);
+      this.getGoodsList(this.showType)
     }
   },
   created() {
@@ -118,6 +119,13 @@ export default {
     this.getGoodsList("pop");
     this.getGoodsList("new");
     this.getGoodsList("sell");
+  },
+  activated(){
+    this.$refs.scroll.refresh()
+    this.$refs.scroll.scrollTo(0,this.scrollY,0)
+  },
+  deactivated(){
+    this.scrollY = this.$refs.scroll.getScrollY()
   }
 };
 </script>
