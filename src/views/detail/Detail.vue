@@ -5,21 +5,24 @@
       <detail-shop-info :shopInfo="shopInfo"></detail-shop-info>
       <detail-goods-info :goodsInfo="goodsInfo"></detail-goods-info>
       <detail-btm-info :detailInfo="detailInfo"></detail-btm-info>
+      <detail-shop-params :shopParams="shopParams"></detail-shop-params>
+      <detail-comment :comment="comment"></detail-comment>
     </my-scroll>
   </div>
 </template>
 
 <script>
 import DetailNav from "./childComps/DetailNav";
-import DetailShopInfo from './childComps/DetailShopInfo'
-import DetailGoodsInfo from './childComps/DetailGoodsInfo'
-import DetailBtmInfo from './childComps/DetailBtmInfo'
+import DetailShopInfo from "./childComps/DetailShopInfo";
+import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+import DetailBtmInfo from "./childComps/DetailBtmInfo";
+import DetailShopParams from "./childComps/DetailShopParams";
+import DetailComment from "./childComps/DetailComment";
 
-
-import MyScroll from '@/components/common/scroll/MyScroll'
+import MyScroll from "@/components/common/scroll/MyScroll";
 
 import { getDetailData } from "@/api/detail";
-import { ShopInfo,GoodsInfo } from "@/api/detail";
+import { ShopInfo, GoodsInfo, ShopParams } from "@/api/detail";
 
 export default {
   name: "Detail",
@@ -28,13 +31,17 @@ export default {
     MyScroll,
     DetailShopInfo,
     DetailGoodsInfo,
-    DetailBtmInfo
+    DetailBtmInfo,
+    DetailShopParams,
+    DetailComment
   },
   data() {
     return {
       shopInfo: {},
-      goodsInfo:{},
-      detailInfo:{}
+      goodsInfo: {},
+      detailInfo: {},
+      shopParams: {},
+      comment: []
     };
   },
   methods: {
@@ -42,16 +49,23 @@ export default {
     async getDetailData(iid) {
       const data = (await getDetailData(iid)).result;
       console.log(data);
-    //   商品信息
+      //   商品信息
       this.shopInfo = new ShopInfo(
         data.itemInfo,
         data.columns,
         data.shopInfo.services
       );
-    //   商家信息
-    this.goodsInfo = new GoodsInfo(data.shopInfo)
-        // 详情信息
-    this.detailInfo = data.detailInfo
+      //   商家信息
+      this.goodsInfo = new GoodsInfo(data.shopInfo);
+      // 详情信息
+      this.detailInfo = data.detailInfo;
+      // 商品参数
+      this.shopParams = new ShopParams(
+        data.itemParams.info,
+        data.itemParams.rule
+      );
+      //用户评价
+      this.comment = data.rate.list
     }
   },
 

@@ -30,3 +30,10 @@ export class GoodsInfo {
         this.sell = shopInfo.cSells
     }
 }
+
+export class ShopParams{
+    constructor(info,rule){
+        this.set = info.set
+        this.tables = rule.tables[0]
+    }
+}

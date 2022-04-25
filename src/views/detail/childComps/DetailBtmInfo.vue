@@ -30,6 +30,7 @@ export default {
     .detail-btm-info{
         margin-top: 40px;
         padding: 0 10px;
+        border-bottom: 3px solid #eee;
         .info{
             &-desc{
                 text-indent: 1em;
