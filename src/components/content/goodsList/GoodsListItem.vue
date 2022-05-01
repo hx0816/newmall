@@ -1,7 +1,7 @@
 <template>
   <div class="goods-list-item" @click="itemClick">
     <div class="item-image">
-      <img :src="listItem.show.img" />
+      <img :src="showImg" />
     </div>
     <div class="item-title">{{listItem.title}}</div>
     <div class="item-btm">
@@ -23,9 +23,20 @@ export default {
       }
     }
   },
-  methods:{
-    itemClick(){
-      this.$router.push('/detail/' + this.listItem.iid)
+  inject:{
+    isClick:{
+      type:Boolean,
+      default:true
+    }
+  },
+  methods: {
+    itemClick() {
+      this.isClick && this.$router.push("/detail/" + this.listItem.iid);
+    }
+  },
+  computed: {
+    showImg() {
+      return this.listItem.show ? this.listItem.show.img : this.listItem.image;
     }
   }
 };
@@ -45,18 +56,18 @@ export default {
         width: 100%;
       }
     }
-    &-title{
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+    &-title {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
-    &-btm{
-        .price{
-            color: red;
-            margin-right: 10px;
-            height: 30px;
-            line-height: 30px;
-        }
+    &-btm {
+      .price {
+        color: red;
+        margin-right: 10px;
+        height: 30px;
+        line-height: 30px;
+      }
     }
   }
 }

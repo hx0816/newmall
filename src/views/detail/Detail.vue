@@ -7,6 +7,7 @@
       <detail-btm-info :detailInfo="detailInfo"></detail-btm-info>
       <detail-shop-params :shopParams="shopParams"></detail-shop-params>
       <detail-comment :comment="comment"></detail-comment>
+      <detail-recommend :recommendList="recommendList"></detail-recommend>
     </my-scroll>
   </div>
 </template>
@@ -18,10 +19,11 @@ import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailBtmInfo from "./childComps/DetailBtmInfo";
 import DetailShopParams from "./childComps/DetailShopParams";
 import DetailComment from "./childComps/DetailComment";
+import DetailRecommend from "./childComps/DetailRecommend";
 
 import MyScroll from "@/components/common/scroll/MyScroll";
 
-import { getDetailData } from "@/api/detail";
+import { getDetailData, getRecommend } from "@/api/detail";
 import { ShopInfo, GoodsInfo, ShopParams } from "@/api/detail";
 
 export default {
@@ -33,7 +35,8 @@ export default {
     DetailGoodsInfo,
     DetailBtmInfo,
     DetailShopParams,
-    DetailComment
+    DetailComment,
+    DetailRecommend
   },
   data() {
     return {
@@ -41,14 +44,14 @@ export default {
       goodsInfo: {},
       detailInfo: {},
       shopParams: {},
-      comment: []
+      comment: [],
+      recommendList:[]
     };
   },
   methods: {
     //   请求数据
     async getDetailData(iid) {
       const data = (await getDetailData(iid)).result;
-      console.log(data);
       //   商品信息
       this.shopInfo = new ShopInfo(
         data.itemInfo,
@@ -65,12 +68,18 @@ export default {
         data.itemParams.rule
       );
       //用户评价
-      this.comment = data.rate.list
+      this.comment = data.rate.list;
+    },
+    // 推荐数据
+    async getRecommend() {
+      const data = (await getRecommend()).data;
+      this.recommendList = data.list;
     }
   },
 
   created() {
     this.getDetailData(this.$route.params.iid);
+    this.getRecommend();
   }
 };
 </script>

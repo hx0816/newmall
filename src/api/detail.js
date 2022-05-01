@@ -9,6 +9,12 @@ export const getDetailData = (iid) => {
     })
 }
 
+export const getRecommend = () => {
+    return request({
+        url: '/recommend'
+    })
+}
+
 export class ShopInfo {
     constructor(itemInfo, columns, services) {
         this.image = itemInfo.topImages[0]
@@ -31,8 +37,8 @@ export class GoodsInfo {
     }
 }
 
-export class ShopParams{
-    constructor(info,rule){
+export class ShopParams {
+    constructor(info, rule) {
         this.set = info.set
         this.tables = rule.tables[0]
     }
