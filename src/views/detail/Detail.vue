@@ -1,13 +1,13 @@
 <template>
   <div id="detail">
-    <detail-nav :titles="['商品','参数','评论','推荐']"></detail-nav>
-    <my-scroll class="content">
+    <detail-nav :titles="['商品','参数','评论','推荐']" @titleClick="titleClick" ref="nav"></detail-nav>
+    <my-scroll class="content" ref="scroll" :probeType="3" @scroll="contentScroll">
       <detail-shop-info :shopInfo="shopInfo"></detail-shop-info>
       <detail-goods-info :goodsInfo="goodsInfo"></detail-goods-info>
       <detail-btm-info :detailInfo="detailInfo"></detail-btm-info>
-      <detail-shop-params :shopParams="shopParams"></detail-shop-params>
-      <detail-comment :comment="comment"></detail-comment>
-      <detail-recommend :recommendList="recommendList"></detail-recommend>
+      <detail-shop-params :shopParams="shopParams" ref="params"></detail-shop-params>
+      <detail-comment :comment="comment" ref="comment"></detail-comment>
+      <detail-recommend :recommendList="recommendList" ref="recommend"></detail-recommend>
     </my-scroll>
   </div>
 </template>
@@ -25,6 +25,7 @@ import MyScroll from "@/components/common/scroll/MyScroll";
 
 import { getDetailData, getRecommend } from "@/api/detail";
 import { ShopInfo, GoodsInfo, ShopParams } from "@/api/detail";
+import { debounce } from "@/common/utils";
 
 export default {
   name: "Detail",
@@ -45,7 +46,9 @@ export default {
       detailInfo: {},
       shopParams: {},
       comment: [],
-      recommendList:[]
+      recommendList: [],
+      themeTopYs: [],
+      showIndex:0
     };
   },
   methods: {
@@ -74,10 +77,47 @@ export default {
     async getRecommend() {
       const data = (await getRecommend()).data;
       this.recommendList = data.list;
+    },
+
+    // 添加主题高度
+    imgLoad() {
+      this.themeTopYs = [];
+      this.themeTopYs.push(0);
+      if (this.$refs.params) {
+        this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+      }
+      if (this.$refs.comment) {
+        this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+      }
+      if (this.$refs.recommend) {
+        this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+      }
+    },
+    // 点击对应主题滚动到相应位置
+    titleClick(index){
+      this.showIndex = index
+      this.$refs.scroll.scrollTo(0,-this.themeTopYs[index],0)
+    },
+    // 监听内容滚动
+    contentScroll(y){
+      const optionsY = Math.abs(y)
+      for(var i = this.themeTopYs.length-1;i>=0;i--){
+        if(optionsY >= this.themeTopYs[i]){
+          if(this.showIndex !== i){
+            this.showIndex = i
+            this.$refs.nav.showIndex = i
+          }
+          break
+        }
+      }
     }
   },
 
   created() {
+    const debounceImgLoad = debounce(this.imgLoad, 500);
+
+    //   监听goodsList图片加载完成
+    this.$bus.$on("imgLoad", debounceImgLoad);
     this.getDetailData(this.$route.params.iid);
     this.getRecommend();
   }

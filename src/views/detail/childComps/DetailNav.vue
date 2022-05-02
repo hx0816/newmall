@@ -45,6 +45,7 @@ export default {
     itemClick(index) {
       if (this.showIndex === index) return;
       this.showIndex = index;
+      this.$emit("titleClick",index)
     },
     backClick() {
       this.$router.back();
