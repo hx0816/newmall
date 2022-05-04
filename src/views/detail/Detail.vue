@@ -9,6 +9,7 @@
       <detail-comment :comment="comment" ref="comment"></detail-comment>
       <detail-recommend :recommendList="recommendList" ref="recommend"></detail-recommend>
     </my-scroll>
+    <back-top @click.native="backTop" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -26,9 +27,11 @@ import MyScroll from "@/components/common/scroll/MyScroll";
 import { getDetailData, getRecommend } from "@/api/detail";
 import { ShopInfo, GoodsInfo, ShopParams } from "@/api/detail";
 import { debounce } from "@/common/utils";
+import {backTopMixin} from '@/common/mixin'
 
 export default {
   name: "Detail",
+  mixins:[backTopMixin],
   components: {
     DetailNav,
     MyScroll,
@@ -48,7 +51,8 @@ export default {
       comment: [],
       recommendList: [],
       themeTopYs: [],
-      showIndex:0
+      showIndex:0,
+      isShowBackTop:false
     };
   },
   methods: {
@@ -100,6 +104,9 @@ export default {
     },
     // 监听内容滚动
     contentScroll(y){
+      // backTop显示隐藏
+      this.listenShowBackTop(y)
+
       const optionsY = Math.abs(y)
       for(var i = this.themeTopYs.length-1;i>=0;i--){
         if(optionsY >= this.themeTopYs[i]){
@@ -112,6 +119,7 @@ export default {
       }
     }
   },
+  
 
   created() {
     const debounceImgLoad = debounce(this.imgLoad, 500);
@@ -126,9 +134,12 @@ export default {
 
 <style lang='scss' scoped>
 #detail {
-  height: calc(100vh - 49px);
+  height: 100vh;
+  background-color: #fff;
+  position: relative;
+  z-index: 1;
   .content {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 58px);
   }
 }
 </style>
