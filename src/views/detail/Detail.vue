@@ -10,6 +10,7 @@
       <detail-recommend :recommendList="recommendList" ref="recommend"></detail-recommend>
     </my-scroll>
     <back-top @click.native="backTop" v-show="isShowBackTop"></back-top>
+    <detail-tool class="detail-tool"></detail-tool>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import DetailBtmInfo from "./childComps/DetailBtmInfo";
 import DetailShopParams from "./childComps/DetailShopParams";
 import DetailComment from "./childComps/DetailComment";
 import DetailRecommend from "./childComps/DetailRecommend";
+import DetailTool from './childComps/DetailTool'
 
 import MyScroll from "@/components/common/scroll/MyScroll";
 
@@ -40,7 +42,8 @@ export default {
     DetailBtmInfo,
     DetailShopParams,
     DetailComment,
-    DetailRecommend
+    DetailRecommend,
+    DetailTool
   },
   data() {
     return {
